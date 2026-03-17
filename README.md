@@ -1,7 +1,7 @@
-# SIDM
+# SIDM hellow world
 SIDM analysis at coffea-casa.  
 Inspired by github.com/phylsix/Firefighter and/or github.com/phylsix/FireROOT
-
+by eli
 ## Getting started
 - Fork this repository ([here's a nice guide to follow](https://gist.github.com/Chaser324/ce0505fbed06b947d962))
 - Log in to coffea.casa as described [here](https://coffea-casa.readthedocs.io/en/latest/cc_user.html#cms-authz-authentication-instance)
