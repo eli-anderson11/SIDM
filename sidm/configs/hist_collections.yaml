@@ -85,6 +85,7 @@ dsaMuon_base: &dsaMuon_base
   - "dsaMuon_numOverlapSegments_matchedMuons"
   - "dsaMuon_numOverlapSegments_goodMatchedMuons"
   - "dsaMu_dsaMu_cosAlpha"
+  - "leading_event_muon_pt"
 
 lj_base: &lj_base
   - "lj_n"

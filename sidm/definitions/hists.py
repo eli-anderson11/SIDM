@@ -697,6 +697,19 @@ hist_defs = {
         ],
         evt_mask=lambda objs: (ak.num(objs["muons"]) + ak.num(objs["dsaMuons"])) > 1,
     ),
+    #Just the leading muon pT
+    "leading_event_muon_pt": h.Histogram(
+        [
+            h.Axis(hist.axis.Regular(50, 0, 800, name="leading_event_muon_pt", 
+                                     label="Leading Event-Level Muon pT (PF or DSA) [GeV]"),
+                   lambda objs, mask: ak.sort(
+                       ak.concatenate([objs["muons"].pt, objs["dsaMuons"].pt], axis=-1), 
+                       axis=-1, ascending=False
+                   )[mask, 0]),
+        ],
+        # Require > 0 muons
+        #evt_mask=lambda objs: (ak.num(objs["muons"]) + ak.num(objs["dsaMuons"])) > 0 
+    ),
     # Muon pT score per lepton jet:
         # 0 = no muons in the jet have pt > 26 GeV
         # 1 = only the leading muon in the jet has pt > 26 GeV
