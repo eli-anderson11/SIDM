@@ -1,0 +1,59 @@
+# Frozen environment for the Condor workers. Used by run_job.sh and
+# run_census_job.sh as
+#
+#     pip install -r requirements.txt -c constraints.txt
+#
+# Separate from the top-level constraints.txt because a worker builds its venv
+# from CMSSW_14_1_0_pre4, whose python is 3.9.14, and therefore resolves a
+# different set than the python 3.11 CI/notebook stack.
+#
+# Scope, worth being precise about: this is the delta pip installs ON TOP OF
+# CMSSW's own site-packages (the venv is created with --system-site-packages),
+# not a whole-environment lock. Whatever CMSSW already provides is pinned by the
+# CMSSW release itself, so the combination stays reproducible as long as
+# run_job.sh keeps naming that release.
+#
+# To regenerate, in the same context a job uses:
+#
+#     source /cvmfs/cms.cern.ch/cmsset_default.sh
+#     export SCRAM_ARCH=el9_amd64_gcc12
+#     scramv1 project CMSSW CMSSW_14_1_0_pre4
+#     cd CMSSW_14_1_0_pre4/src && eval `scramv1 runtime -sh` && cd -
+#     python3 -m venv /tmp/cfreeze --system-site-packages
+#     source /tmp/cfreeze/bin/activate && python -m pip install --upgrade pip
+#     python -m pip install --dry-run --report /tmp/r.json -r condor/requirements.txt
+#     # then write name==version for every entry in r.json["install"]
+#
+# The condor-deps workflow checks that condor/requirements.txt still resolves on
+# python 3.9 for every PR that touches it.
+
+aiohappyeyeballs==2.6.1
+aiohttp==3.13.5
+aiosignal==1.4.0
+async-timeout==5.0.1
+awkward==2.8.2
+awkward_cpp==45
+boost-histogram==1.5.2
+coffea==2025.5.0rc2
+correctionlib==2.9.0
+dask-awkward==2025.9.0
+dask-histogram==2025.2.0
+fastjet==3.4.3.1
+frozenlist==1.8.0
+fsspec_xrootd==0.5.5
+hist==2.8.0
+kiwisolver==1.4.7
+llvmlite==0.43.0
+multidict==6.7.1
+numba==0.60.0
+numpy==1.26.4
+propcache==0.4.1
+pyarrow==21.0.0
+pyyaml==6.0.2
+setuptools==80.1.0
+tqdm==4.70.0
+uproot==5.6.2
+vector==1.6.2
+xrootd==6.1.1
+xxhash==4.0.0
+yarl==1.22.0

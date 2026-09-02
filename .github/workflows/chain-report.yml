@@ -1,0 +1,67 @@
+name: chain-report
+
+# Reviewer-facing report (NOT a hard gate): on every PR and PR update, run the
+# processing+plotting chain over a small committed fixture for both the base
+# (main) and the PR, and post a current-vs-after diff to the Actions job summary.
+# The check goes soft-red only if the PR introduces a NEW error: a newly broken
+# or worsened hist collection, a chain crash (on the PR, or on both sides --
+# either an environment/harness change in the PR or a broken main; or a failed
+# collection-inventory build), a hist newly failing to evaluate/fill, or a cut
+# newly failing to evaluate/apply (matched by exact warning class -- an
+# intentional cut removal emits no warning and stays green). Other new warnings
+# stay informational/green.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# a new push to the PR cancels an in-flight report for the same PR
+concurrency:
+  group: chain-report-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50   # ~28 min since the data-fixture pass (two computes at ~13 min
+                          # each); cap so a hang can't burn the 6 h default
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need the base commit to compute the "current" state
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"   # analysis pins (numpy 2.3, coffea 2025) need >=3.11
+          cache: pip
+
+      - name: Install the analysis stack
+        run: |
+          python -m pip install --upgrade pip
+          pip install -c constraints.txt -r requirements.txt
+          # distributed is not in requirements.txt, but coffea's Client import needs it
+          pip install -c constraints.txt "distributed==2025.3.0"
+          pip install -e .
+
+      - name: Compute chain state for this PR
+        run: MPLBACKEND=Agg python tests/chain_report.py compute /tmp/state_pr.json
+
+      - name: Compute chain state for base (main)
+        run: |
+          # HEAD here is the synthetic merge commit actions/checkout gives for
+          # pull_request events (this PR merged into the CURRENT base tip), so
+          # HEAD^1 is by construction the exact base the PR side was measured
+          # against. Using it -- not the frozen event-payload base.sha -- keeps
+          # both sides pinned to the SAME base even on re-runs or when the base
+          # branch has moved, so other PRs' changes cannot be attributed to this
+          # one.
+          git rev-parse HEAD^2 >/dev/null 2>&1 || { echo "::error::HEAD is not a merge commit; cannot locate the base side"; exit 1; }
+          # swap only the analysis code to the base; keep the PR's harness + fixture.
+          # rm -rf first so files the PR ADDS under sidm/ don't leak into the base
+          # side (a pathspec checkout overlays but never deletes).
+          rm -rf sidm
+          git checkout "$(git rev-parse HEAD^1)" -- sidm
+          MPLBACKEND=Agg python tests/chain_report.py compute /tmp/state_base.json
+
+      - name: Render report to job summary (soft red check on new errors)
+        run: MPLBACKEND=Agg python tests/chain_report.py render /tmp/state_base.json /tmp/state_pr.json >> "$GITHUB_STEP_SUMMARY"

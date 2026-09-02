@@ -8,8 +8,66 @@ from coffea.analysis_tools import PackedSelection
 import awkward as ak
 import numpy as np
 
+class SimpleCutflow(processor.AccumulatorABC):
+    def __init__(self, verbose=False):
+        self.verbose = verbose
+        self.rows = {}
+
+    def identity(self):
+        """Create additive identity Cutflow to allow accumlator behavior"""
+        cutflow = SimpleCutflow()
+        for cut in self.rows:
+            cutflow.add_row(cut, 0, 0.0)
+        return cutflow
+
+    def add(self, other):
+        """Add two cutflows"""
+        if self.rows.keys() != other.rows.keys():
+            raise RuntimeError("Cutflows must have same set of cuts to be added")
+        for cut in self.rows:
+            self.rows[cut]["raw"] += other.rows[cut]["raw"]
+            self.rows[cut]["weighted"] += other.rows[cut]["weighted"]
+
+    def scale(self, weight):
+        """Apply overall scale factor to weighted Cutflow"""
+        for cut in self.rows:
+            self.rows[cut]["weighted"] *= weight
+
+    def add_row(self, cut, raw, weighted): 
+        """Add additional cut and associated cut to cutflow"""
+        if cut in self.rows:
+            raise RuntimeError(f"{cut} already in cutflow and cannot be added twice")
+        self.rows[cut] = {"raw": raw, "weighted": weighted}
+
+    def print_table(self):
+        """Print simple cutflow table to stdout"""
+        headers = [
+            "cut name",
+            "raw N",
+            "weighted N",
+            "weighted %",
+        ]
+        # Normalize the "weighted %" column to the initial ("None") row, falling back to
+        # the first row if "None" is absent and guarding a zero denominator. Previously
+        # total_weighted was only assigned on the "None" row inside the loop, so a cutflow
+        # whose first row was not "None" raised NameError before the first append.
+        first = self.rows.get("None") or next(iter(self.rows.values()), {"weighted": 0})
+        total_weighted = first["weighted"]
+        data = []
+        for cut, vals in self.rows.items():
+            pct = 100 * vals["weighted"] / total_weighted if total_weighted else float("nan")
+            data.append([cut, vals["raw"], vals["weighted"], pct])
+        print(tabulate(data, headers, floatfmt=".1f"))
+
+
 class Cutflow(processor.AccumulatorABC):
     """Class to represent the number of events that pass each cut in a selection
+
+    NOTE: currently UNUSED and not constructable -- the processor builds SimpleCutflow,
+    and CutflowElement.__init__ indexes a non-subscriptable Cutflow, so instantiating
+    this class raises TypeError. The n_ind accounting is also half-removed (init
+    commented out but still referenced). Left in place pending a decision to repair or
+    remove it; do not rely on it.
 
     Cutflow can print tables of the following values:
     - n_ind: number of events that pass each cut individually
@@ -132,18 +190,19 @@ class CutflowElement(processor.AccumulatorABC):
         """Create each cutflow table row"""
         self.cut = cut
         self.cutflow = cutflow
-        self.n_evts = ak.sum(weights)
+        self.n_evts = cutflow["None"]["Weighted"]
         self.is_first_element = is_first_element
-        self.f_ind = None
+        #self.f_ind = None
         self.f_all = None
         self.f_mar = None
 
         if is_first_element or self.n_evts == 0:
-            self.n_ind = self.n_evts
+            #self.n_ind = self.n_evts
             self.n_all = self.n_evts
         else:
             cumulative_cuts = self.cutflow.selection[:self.cutflow.selection.index(cut) + 1]
-            self.n_ind = ak.sum(weights[all_cuts.all(cut)])
+            print(f"making cutflow: {cut}")
+            #self.n_ind = ak.sum(weights[all_cuts.all(cut)])
             self.n_all = ak.sum(weights[all_cuts.all(*cumulative_cuts)])
 
     def identity(self):

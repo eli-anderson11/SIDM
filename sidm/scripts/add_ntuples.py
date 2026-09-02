@@ -57,6 +57,73 @@ def parse_name(name):
         "ZZ_TuneCP5_13TeV" : "ZZ",
         "Run2018C" : "DoubleMuon_2018C",
         "Run2018C_15Feb2022_UL2018": "DoubleMuon_2018C",
+
+        "Run2018B_15Feb2022_UL2018_Block1": "DoubleMuon_2018B_0",
+        "Run2018B_15Feb2022_UL2018_Block2": "DoubleMuon_2018B_1",
+        "Run2018B_15Feb2022_UL2018_Block3": "DoubleMuon_2018B_2",
+        "Run2018B_15Feb2022_UL2018_Block4": "DoubleMuon_2018B_3",
+        "Run2018B_15Feb2022_UL2018_Block5": "DoubleMuon_2018B_4",
+        "Run2018B_15Feb2022_UL2018_Block6": "DoubleMuon_2018B_5",
+        "Run2018B_15Feb2022_UL2018_Block7": "DoubleMuon_2018B_6",
+        "Run2018B_15Feb2022_UL2018_Block8": "DoubleMuon_2018B_7",
+        "Run2018B_15Feb2022_UL2018_Block9": "DoubleMuon_2018B_8",
+        "Run2018B_15Feb2022_UL2018_Block10": "DoubleMuon_2018B_9",
+        "Run2018B_15Feb2022_UL2018_Block11": "DoubleMuon_2018B_10",
+        "Run2018B_15Feb2022_UL2018_Block12": "DoubleMuon_2018B_11",
+        "Run2018B_15Feb2022_UL2018_Block13": "DoubleMuon_2018B_12",
+        "Run2018B_15Feb2022_UL2018_Block14": "DoubleMuon_2018B_13",
+
+        "Run2018D_15Feb2022_UL2018_Block_0aface09": "DoubleMuon_2018D_0",
+        "Run2018D_15Feb2022_UL2018_Block_18f48385": "DoubleMuon_2018D_1",
+        "Run2018D_15Feb2022_UL2018_Block_1cf7400c": "DoubleMuon_2018D_2",
+        "Run2018D_15Feb2022_UL2018_Block_227e0956": "DoubleMuon_2018D_3",
+        "Run2018D_15Feb2022_UL2018_Block_22e16122": "DoubleMuon_2018D_4",
+        "Run2018D_15Feb2022_UL2018_Block_2592308d": "DoubleMuon_2018D_5",
+        "Run2018D_15Feb2022_UL2018_Block_27d5e0fb": "DoubleMuon_2018D_6",
+        "Run2018D_15Feb2022_UL2018_Block_2f365cb7": "DoubleMuon_2018D_7",
+        "Run2018D_15Feb2022_UL2018_Block_31b39d2d": "DoubleMuon_2018D_8",
+        "Run2018D_15Feb2022_UL2018_Block_327a81b6": "DoubleMuon_2018D_9",
+        "Run2018D_15Feb2022_UL2018_Block_3d030fc3": "DoubleMuon_2018D_10",
+        "Run2018D_15Feb2022_UL2018_Block_48a90814": "DoubleMuon_2018D_11",
+        "Run2018D_15Feb2022_UL2018_Block_51c6e6eb": "DoubleMuon_2018D_12",
+        "Run2018D_15Feb2022_UL2018_Block_51c8c04b": "DoubleMuon_2018D_13",
+        "Run2018D_15Feb2022_UL2018_Block_5314eda4": "DoubleMuon_2018D_14",
+        "Run2018D_15Feb2022_UL2018_Block_57cf89e5": "DoubleMuon_2018D_15",
+        "Run2018D_15Feb2022_UL2018_Block_5f23e071": "DoubleMuon_2018D_16",
+        "Run2018D_15Feb2022_UL2018_Block_65f115dd": "DoubleMuon_2018D_17",
+        "Run2018D_15Feb2022_UL2018_Block_69710812": "DoubleMuon_2018D_18",
+        "Run2018D_15Feb2022_UL2018_Block_697a4e54": "DoubleMuon_2018D_19",
+        "Run2018D_15Feb2022_UL2018_Block_6b2ace48": "DoubleMuon_2018D_20",
+        "Run2018D_15Feb2022_UL2018_Block_7d8d8539": "DoubleMuon_2018D_21",
+        "Run2018D_15Feb2022_UL2018_Block_7dae55a6": "DoubleMuon_2018D_22",
+        "Run2018D_15Feb2022_UL2018_Block_81881293": "DoubleMuon_2018D_23",
+        "Run2018D_15Feb2022_UL2018_Block_82c1a5f9": "DoubleMuon_2018D_24",
+        "Run2018D_15Feb2022_UL2018_Block_895cfb04": "DoubleMuon_2018D_25",
+        "Run2018D_15Feb2022_UL2018_Block_8a364826": "DoubleMuon_2018D_26",
+        "Run2018D_15Feb2022_UL2018_Block_8bcd32b9": "DoubleMuon_2018D_27",
+        "Run2018D_15Feb2022_UL2018_Block_8efc6d7f": "DoubleMuon_2018D_28",
+        "Run2018D_15Feb2022_UL2018_Block_972e3c94": "DoubleMuon_2018D_29",
+        "Run2018D_15Feb2022_UL2018_Block_98f6a4bc": "DoubleMuon_2018D_30",
+        "Run2018D_15Feb2022_UL2018_Block_a258a556": "DoubleMuon_2018D_31",
+        "Run2018D_15Feb2022_UL2018_Block_a4e18704": "DoubleMuon_2018D_32",
+        "Run2018D_15Feb2022_UL2018_Block_b37fdf5c": "DoubleMuon_2018D_33",
+        "Run2018D_15Feb2022_UL2018_Block_b3f1aa9e": "DoubleMuon_2018D_34",
+        "Run2018D_15Feb2022_UL2018_Block_b8ae72fe": "DoubleMuon_2018D_35",
+        "Run2018D_15Feb2022_UL2018_Block_ba86209f": "DoubleMuon_2018D_36",
+        "Run2018D_15Feb2022_UL2018_Block_c701125b": "DoubleMuon_2018D_37",
+        "Run2018D_15Feb2022_UL2018_Block_c94cb5b6": "DoubleMuon_2018D_38",
+        "Run2018D_15Feb2022_UL2018_Block_cd71ffd0": "DoubleMuon_2018D_39",
+        "Run2018D_15Feb2022_UL2018_Block_d12b2ef6": "DoubleMuon_2018D_40",
+        "Run2018D_15Feb2022_UL2018_Block_d1a63b87": "DoubleMuon_2018D_41",
+        "Run2018D_15Feb2022_UL2018_Block_d904c1b4": "DoubleMuon_2018D_42",
+        "Run2018D_15Feb2022_UL2018_Block_dae69e31": "DoubleMuon_2018D_43",
+        "Run2018D_15Feb2022_UL2018_Block_e71160f8": "DoubleMuon_2018D_44",
+        "Run2018D_15Feb2022_UL2018_Block_e766d64d": "DoubleMuon_2018D_45",
+        "Run2018D_15Feb2022_UL2018_Block_ee09f7a6": "DoubleMuon_2018D_46",
+        "Run2018D_15Feb2022_UL2018_Block_f037f5e1": "DoubleMuon_2018D_47",
+        "Run2018D_15Feb2022_UL2018_Block_f18716d8": "DoubleMuon_2018D_48",
+        "Run2018D_15Feb2022_UL2018_Block_fec58313": "DoubleMuon_2018D_49",
+
         "0000": "DoubleMuon_2018A_0",
         "0001": "DoubleMuon_2018A_1",
         "0002": "DoubleMuon_2018A_2",
@@ -179,7 +246,19 @@ for sample in samples:
                 print(f"failed reading {file_path}")
                 print("skipping")
                 continue
-            tree = in_file.Events
+            if not in_file or in_file.IsZombie():
+                print(f"failed reading {file_path}")
+                print("skipping")
+                continue
+
+            # tree = in_file.Events
+            tree = in_file.Get("Events")
+            if tree is None:
+                print(f"No Events tree in {file_path}")
+                print("skipping")
+                in_file.Close()
+                continue
+
             for entry in tree:
                 file_skimmed_evts = tree.GetEntries()
                 file_original_evts = entry.OriginalEventIndex

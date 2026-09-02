@@ -1,17 +1,16 @@
 """Module to define the Selection and JaggedSelection classes"""
 
 # columnar analysis
-from coffea.analysis_tools import PackedSelection
+import awkward as ak
 # local
 from sidm.definitions.cuts import evt_cut_defs, obj_cut_defs
+from sidm.tools.cutflow import SimpleCutflow
 import traceback
-
 
 class Selection:
     """Class to represent the collection of cuts that define a Selection
 
     A selection consists of event-level cuts which reject whole events.
-    Cuts are stored as a PackedSelection.
 
     All available cuts are defined in sidm.definitions.cuts. The specific cuts that define each
     selection are accepted by Selection() as lists of strings.
@@ -19,28 +18,38 @@ class Selection:
 
     def __init__(self, cuts, verbose=False):
         self.evt_cuts = cuts # list of names of cuts to be applied
-        self.all_evt_cuts = PackedSelection() # will be filled later when cuts are evaluated
+        self.cutflow = SimpleCutflow() # will be filled later when cuts are evaluated
         self.verbose = verbose
 
     def apply_evt_cuts(self, objs):
         """Evaluate all event cuts and apply results to object collections"""
-
-        # evaluate all selected cuts
+        self.cutflow.add_row("None", ak.count(objs["evt_weights"]), ak.sum(objs["evt_weights"]))
+        sel_objs = objs.copy()
         for cut in self.evt_cuts:
+            # evaluate cuts
             if self.verbose:
                 print("Applying cut:", cut)
             try:
-                self.all_evt_cuts.add(cut, evt_cut_defs[cut](objs))
+                mask = evt_cut_defs[cut](sel_objs)
             except Exception as e:
                 print(f"Warning: Unable to evaluate {cut} Skipping.",e)
+                # Skip this cut entirely. Event cuts were once collected and
+                # applied together as a single AND after the loop, where falling
+                # through here was harmless. They are now evaluated and applied
+                # one at a time against the progressively slimmed collections,
+                # so without this the loop below would re-apply the PREVIOUS
+                # cut's mask and log a cutflow row under this cut's name.
+                continue
 
-        # apply event cuts to object collections
-        sel_objs = {}
-        for name, obj in objs.items():
-            try:
-                sel_objs[name] = obj[self.all_evt_cuts.all(*self.evt_cuts)]
-            except:
-                print(f"Warning: Unable to apply event cuts to {name}. Skipping.")
+            # apply to all object collections
+            for name, obj in sel_objs.items():
+                try:
+                    sel_objs[name] = obj[mask]
+                    if name == "evt_weights":
+                        self.cutflow.add_row(cut, ak.count(sel_objs[name]), ak.sum(sel_objs[name]))
+                except:
+                    print(f"Warning: Unable to apply event cuts to {name}. Skipping.")
+
         return sel_objs
 
 

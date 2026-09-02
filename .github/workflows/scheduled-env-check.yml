@@ -1,0 +1,116 @@
+name: scheduled-env-check
+
+# Runs the chain over the committed fixture against `main` on a weekly schedule,
+# and resolves condor/requirements.txt on python 3.9. Nothing here depends on a
+# PR: the point is to separate "the environment drifted" from "your PR broke
+# something".
+#
+# Why this exists: requirements.txt pins direct dependencies only, and both the
+# CI and the Condor workers resolve the rest from PyPI on every run. Until now
+# the environment was exercised ONLY when somebody opened a PR, so an upstream
+# release that breaks the stack was discovered by whichever author opened the
+# next PR and presented to them as "my PR is red". That happened on 2026-08-11,
+# when numba 0.67.0 / llvmlite 0.49.0 started miscompiling coffea's GenPart
+# children kernel. `main` does not change between scheduled runs, so a red run
+# here is unambiguously the environment.
+#
+# Notes for whoever maintains this:
+#   * runs-on is deliberately `ubuntu-latest`, a STANDARD GitHub-hosted runner.
+#     Those are free on public repositories with no minute quota. A larger
+#     runner would be billed even here, so do not "upgrade" it casually.
+#   * Scheduled workflows only ever run from the DEFAULT branch, so this file
+#     does nothing until it is merged to main. workflow_dispatch is included so
+#     it can be triggered by hand to confirm it works.
+#   * GitHub auto-disables scheduled workflows in a repository with 60 days of
+#     no activity. If this goes quiet rather than red, check that first.
+#   * How a failure reaches a human: the run goes red in the Actions tab, and
+#     GitHub emails whoever last committed to this file. There is deliberately
+#     no auto-filed issue -- Issues are disabled on this repository, so filing
+#     one is not possible without turning that on. If the team ever wants that,
+#     enable Settings -> General -> Features -> Issues first, then add a job
+#     with `issues: write` permission.
+
+on:
+  schedule:
+    # Weekly, Tuesday 06:17 UTC. Deliberately not on the hour: GitHub's cron
+    # queue is congested at :00 and runs get delayed.
+    - cron: '17 6 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: read    # read-only: this workflow reports, it never writes anything
+
+concurrency:
+  group: scheduled-env-check
+  cancel-in-progress: false
+
+jobs:
+  chain:
+    name: chain on main (fresh dependency resolution)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install the analysis stack
+        run: |
+          python -m pip install --upgrade pip
+          # DELIBERATELY UNCONSTRAINED -- do not add `-c constraints.txt` here.
+          # The PR workflows install against the frozen constraints files, which
+          # is what makes their results reproducible, but it also means they can
+          # no longer notice that upstream has moved. This run resolves fresh
+          # from PyPI precisely so that something still does: it is what tells
+          # you a deliberate dependency bump is safe, or that a new release has
+          # broken the stack. Constraining it would make this job green forever
+          # and silently useless.
+          pip install -r requirements.txt
+          pip install "distributed==2025.3.0"
+          pip install -e .
+
+      - name: Record what PyPI served today
+        run: pip freeze
+
+      - name: Run the chain
+        run: MPLBACKEND=Agg python tests/chain_report.py compute /tmp/state.json
+
+      - name: Fail if the chain errored
+        run: |
+          python - <<'PY'
+          import json, sys
+          state = json.load(open("/tmp/state.json"))
+          # `compute` catches its own exceptions into the state and exits 0, so
+          # the error fields -- not the exit code -- are what say it went wrong.
+          failed = False
+          for field in ("inventory_error", "error"):
+              if state.get(field):
+                  failed = True
+                  print(f"::error::chain {field} on main -- the environment, not a PR")
+                  print(state[field])
+          print(f"channels executed:        {state.get('n_channels_run')}")
+          print(f"valid hist collections:   {state.get('valid_collection_count')}")
+          print(f"broken hist collections:  {len(state.get('broken_collections') or {})}")
+          print(f"catch-and-skip warnings:  {len(state.get('warnings') or [])}")
+          sys.exit(1 if failed else 0)
+          PY
+
+  condor-resolve:
+    name: condor/requirements.txt resolves on python 3.9
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"   # CMSSW_14_1_0_pre4 ships python 3.9.14
+
+      - name: Resolve on python 3.9
+        run: |
+          python -m pip install --upgrade pip
+          # --dry-run resolves without installing, so the xrootd C extension is
+          # never built on the runner
+          python -m pip install --dry-run -r condor/requirements.txt

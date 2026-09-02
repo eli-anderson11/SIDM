@@ -1,4 +1,6 @@
 from coffea.nanoevents import NanoAODSchema
+from sidm.tools import gen as _gen  # noqa: F401 -- import installs the cycle-safe
+# distinctParent kernel patch: self-referential GenPart in some skims would otherwise hang.
 
 class LLPNanoAODSchema(NanoAODSchema):
     """LLPNano schema builder
@@ -100,10 +102,10 @@ class LLPNanoAODSchema(NanoAODSchema):
 
         nanoaod._set_repr_name("DSAMuon")
 
-        DSAMuonArray.ProjectionClass2D = vector.TwoVectorArray  # noqa: F821
-        DSAMuonArray.ProjectionClass3D = vector.ThreeVectorArray  # noqa: F821
-        DSAMuonArray.ProjectionClass4D = DSAMuonArray  # noqa: F821
-        DSAMuonArray.MomentumClass = vector.LorentzVectorArray  # noqa: F821
+        DSAMuonArray.ProjectionClass2D = vector.TwoVectorArray  # noqa: F821  # pylint: disable=undefined-variable
+        DSAMuonArray.ProjectionClass3D = vector.ThreeVectorArray  # noqa: F821  # pylint: disable=undefined-variable
+        DSAMuonArray.ProjectionClass4D = DSAMuonArray  # noqa: F821  # pylint: disable=undefined-variable
+        DSAMuonArray.MomentumClass = vector.LorentzVectorArray  # noqa: F821  # pylint: disable=undefined-variable
 
         ##### Now update standard Muon class
         nanoaod.behavior.update(awkward._util.copy_behaviors("Muon", "LLPMuon", nanoaod.behavior))
@@ -149,10 +151,10 @@ class LLPNanoAODSchema(NanoAODSchema):
 
         nanoaod._set_repr_name("LLPMuon")
 
-        LLPMuonArray.ProjectionClass2D = vector.TwoVectorArray  # noqa: F821
-        LLPMuonArray.ProjectionClass3D = vector.ThreeVectorArray  # noqa: F821
-        LLPMuonArray.ProjectionClass4D = LLPMuonArray  # noqa: F821
-        LLPMuonArray.MomentumClass = vector.LorentzVectorArray  # noqa: F821
+        LLPMuonArray.ProjectionClass2D = vector.TwoVectorArray  # noqa: F821  # pylint: disable=undefined-variable
+        LLPMuonArray.ProjectionClass3D = vector.ThreeVectorArray  # noqa: F821  # pylint: disable=undefined-variable
+        LLPMuonArray.ProjectionClass4D = LLPMuonArray  # noqa: F821  # pylint: disable=undefined-variable
+        LLPMuonArray.MomentumClass = vector.LorentzVectorArray  # noqa: F821  # pylint: disable=undefined-variable
 
 
 

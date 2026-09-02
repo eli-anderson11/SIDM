@@ -1,0 +1,54 @@
+name: condor-deps
+
+# Condor workers build their venv from CMSSW_14_1_0_pre4, whose python is
+# 3.9.14, while everything a developer normally tests on -- the LPC notebook
+# venv and the other two workflows -- is python 3.11. A pin that needs python
+# >=3.10 therefore installs cleanly everywhere it is tried and then fails on
+# every worker, taking a whole campaign down with it. This job resolves
+# condor/requirements.txt on python 3.9 and prints what a worker would install.
+#
+# It checks RESOLVABILITY only: it does not reproduce the full CMSSW environment
+# (a real worker also sees CMSSW's own site-packages) and it does not run the
+# analysis. A cheap guard, not a substitute for the chain report.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'condor/requirements.txt'
+      - '.github/workflows/condor-deps.yml'
+
+concurrency:
+  group: condor-deps-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"   # CMSSW_14_1_0_pre4 ships python 3.9.14
+
+      - name: Resolve condor/requirements.txt on python 3.9
+        run: |
+          python -m pip install --upgrade pip
+          # --dry-run resolves without installing, so no C extension (xrootd)
+          # is ever built on the runner
+          python -m pip install --dry-run --report /tmp/resolve.json \
+            -r condor/requirements.txt
+
+      - name: Show what a Condor worker would install
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("/tmp/resolve.json"))
+          pkgs = sorted((i["metadata"]["name"].lower(), i["metadata"]["version"])
+                        for i in report["install"])
+          print(f"{len(pkgs)} packages resolved on python 3.9:")
+          for name, version in pkgs:
+              print(f"  {name}=={version}")
+          PY

@@ -1,21 +1,28 @@
 # config to store info on cross sections in pb
 
-# bg values come from https://xsecdb-xsdb-official.app.cern.ch/xsdb/
+# bg values calculated with genxanalyzer (reference from xsdb)
+DYJetsToLL_M10to50: 15900.0
+DYJetsToLL_M50: 5346.0
 DYJetsToMuMu_M10to50: 7013.0
 DYJetsToMuMu_M50: 1976.0
-QCD_Pt15To20: 2800000.0
-QCD_Pt20To30: 2527000.0
-QCD_Pt30To50: 1367000.0
-QCD_Pt50To80: 381700.0
-QCD_Pt80To120: 87740.0
-QCD_Pt120To170: 21280.0
-QCD_Pt170To300: 7000.0
-QCD_Pt300To470: 622.6
-QCD_Pt470To600: 58.9
-QCD_Pt600To800: 18.12
-QCD_Pt800To1000: 3.318
-QCD_Pt1000: 1.085
-TTJets: 471.7 # used LO value -- NLO is 734.6
+QCD_Pt15To20: 2807000.0 # 2800000.0
+QCD_Pt20To30: 2526000.0 # 2527000.0
+QCD_Pt30To50: 1366000.0 # 1367000.0
+QCD_Pt50To80: 378300.0 # 381700.0
+QCD_Pt80To120: 88870.0 # 87740.0
+QCD_Pt120To170: 21200.0 # 21280.0
+QCD_Pt170To300: 7027.0 # 7000.0
+QCD_Pt300To470: 621.3 # 622.6
+QCD_Pt470To600: 59.09 # 58.9
+QCD_Pt600To800: 18.21 # 18.12
+QCD_Pt800To1000: 3.275 # 3.318
+QCD_Pt1000: 1.076 # 1.085
+TTJets: 477.4 # 471.7 # used LO value -- NLO is 734.6
+
+# GenXSecAnalyzer results from the RunIISummer20UL18RECO AODSIM samples.
+WW: 76.03
+WZ: 27.51
+ZZ: 12.14
 
 # assume 1fb for all signal
 # hardcoded in utilities.get_xs() and will be overridden by specific entries here
