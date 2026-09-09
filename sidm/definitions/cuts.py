@@ -7,6 +7,7 @@ from sidm.definitions.objects import derived_objs
 from sidm.tools.utilities import dR, lxy, rho, check_bits, returnBitMapTArrayPhoton, dR_outer, cosAlpha
 
 obj_cut_defs = {
+    
     "pvs": {
         "ndof > 4": lambda objs: objs["pvs"].ndof > 4,
         "|z| < 24 cm": lambda objs: abs(objs["pvs"].z) < 24,
@@ -185,6 +186,13 @@ obj_cut_defs = {
         'Photon DR Veto 0p035': lambda objs: (dR(objs['photons'],objs['electrons']) > 0.035),
         'Photon DR Veto 0p045': lambda objs: (dR(objs['photons'],objs['electrons']) > 0.045),
     },
+    "Photon200": lambda objs: (objs["hlt"].Photon200),
+    "pass triggers": lambda objs: (
+          objs["hlt"].DoubleL2Mu23NoVtx_2Cha
+        | objs["hlt"].DoubleL2Mu23NoVtx_2Cha_CosmicSeed
+        | objs["hlt"].DoubleL2Mu25NoVtx_2Cha_Eta2p4
+        | objs["hlt"].DoubleL2Mu25NoVtx_2Cha_CosmicSeed_Eta2p4
+    ),
     "dsaMuons": {
         "pT > 10 GeV": lambda objs, dsa: dsa.pt > 10,
         "|dxy| <= 40": lambda objs, dsa: abs(dsa.dxy) <= 40,
