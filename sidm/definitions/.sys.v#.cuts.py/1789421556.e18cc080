@@ -186,6 +186,12 @@ obj_cut_defs = {
         'Photon DR Veto 0p035': lambda objs: (dR(objs['photons'],objs['electrons']) > 0.035),
         'Photon DR Veto 0p045': lambda objs: (dR(objs['photons'],objs['electrons']) > 0.045),
     },
+    "pass triggers": lambda objs: (
+          objs["hlt"].DoubleL2Mu23NoVtx_2Cha
+        | objs["hlt"].DoubleL2Mu23NoVtx_2Cha_CosmicSeed
+        | objs["hlt"].DoubleL2Mu25NoVtx_2Cha_Eta2p4
+        | objs["hlt"].DoubleL2Mu25NoVtx_2Cha_CosmicSeed_Eta2p4
+    ),
     "dsaMuons": {
         "pT > 10 GeV": lambda objs, dsa: dsa.pt > 10,
         "|dxy| <= 40": lambda objs, dsa: abs(dsa.dxy) <= 40,

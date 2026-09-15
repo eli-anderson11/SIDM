@@ -20,10 +20,23 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 1,
    "id": "aaa864a3-6123-44be-88c0-1448a7610659",
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "ename": "ModuleNotFoundError",
+     "evalue": "No module named 'fastjet'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mModuleNotFoundError\u001b[0m                       Traceback (most recent call last)",
+      "Cell \u001b[0;32mIn[1], line 15\u001b[0m\n\u001b[1;32m     12\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mRuntimeError\u001b[39;00m(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mStart this notebook inside your SIDM checkout.\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n\u001b[1;32m     13\u001b[0m sys\u001b[38;5;241m.\u001b[39mpath\u001b[38;5;241m.\u001b[39minsert(\u001b[38;5;241m0\u001b[39m, \u001b[38;5;28mstr\u001b[39m(sidm_path))\n\u001b[0;32m---> 15\u001b[0m \u001b[38;5;28;01mfrom\u001b[39;00m \u001b[38;5;21;01msidm\u001b[39;00m\u001b[38;5;21;01m.\u001b[39;00m\u001b[38;5;21;01mtools\u001b[39;00m \u001b[38;5;28;01mimport\u001b[39;00m sidm_processor, llpnanoaodschema, utilities\n\u001b[1;32m     16\u001b[0m importlib\u001b[38;5;241m.\u001b[39mreload(sidm_processor)\n\u001b[1;32m     17\u001b[0m importlib\u001b[38;5;241m.\u001b[39mreload(llpnanoaodschema)\n",
+      "File \u001b[0;32m/eos/home-i03/e/eliricha/SWAN_projects/SIDM_abbott/sidm/tools/sidm_processor.py:11\u001b[0m\n\u001b[1;32m      9\u001b[0m \u001b[38;5;28;01mfrom\u001b[39;00m \u001b[38;5;21;01mcoffea\u001b[39;00m\u001b[38;5;21;01m.\u001b[39;00m\u001b[38;5;21;01mnanoevents\u001b[39;00m\u001b[38;5;21;01m.\u001b[39;00m\u001b[38;5;21;01mmethods\u001b[39;00m \u001b[38;5;28;01mimport\u001b[39;00m vector \u001b[38;5;28;01mas\u001b[39;00m cvec\n\u001b[1;32m     10\u001b[0m \u001b[38;5;28;01mimport\u001b[39;00m \u001b[38;5;21;01mawkward\u001b[39;00m \u001b[38;5;28;01mas\u001b[39;00m \u001b[38;5;21;01mak\u001b[39;00m\n\u001b[0;32m---> 11\u001b[0m \u001b[38;5;28;01mimport\u001b[39;00m \u001b[38;5;21;01mfastjet\u001b[39;00m\n\u001b[1;32m     12\u001b[0m \u001b[38;5;28;01mimport\u001b[39;00m \u001b[38;5;21;01mvector\u001b[39;00m\n\u001b[1;32m     13\u001b[0m \u001b[38;5;66;03m#local\u001b[39;00m\n",
+      "\u001b[0;31mModuleNotFoundError\u001b[0m: No module named 'fastjet'"
+     ]
+    }
+   ],
    "source": [
     "# python\n",
     "import sys\n",
@@ -324,9 +337,9 @@
    "lastKernelId": null
   },
   "kernelspec": {
-   "display_name": "Python (SIDM SWAN)",
+   "display_name": "Python 3",
    "language": "python",
-   "name": "sidm_swan"
+   "name": "python3"
   },
   "language_info": {
    "codemirror_mode": {
