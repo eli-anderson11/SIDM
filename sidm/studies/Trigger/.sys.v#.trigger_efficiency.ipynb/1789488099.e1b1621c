@@ -324,9 +324,9 @@
    "lastKernelId": null
   },
   "kernelspec": {
-   "display_name": "Python (SIDM SWAN)",
+   "display_name": "Python 3",
    "language": "python",
-   "name": "sidm_swan"
+   "name": "python3"
   },
   "language_info": {
    "codemirror_mode": {

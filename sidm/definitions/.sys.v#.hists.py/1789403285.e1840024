@@ -708,7 +708,7 @@ hist_defs = {
                    )[mask, 0]),
         ],
         # Require > 0 muons
-        evt_mask=lambda objs: (ak.num(objs["muons"]) + ak.num(objs["dsaMuons"])) > 0 
+        #evt_mask=lambda objs: (ak.num(objs["muons"]) + ak.num(objs["dsaMuons"])) > 0 
     ),
     # Muon pT score per lepton jet:
         # 0 = no muons in the jet have pt > 26 GeV
