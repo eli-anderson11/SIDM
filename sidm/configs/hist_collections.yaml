@@ -841,5 +841,5 @@ Muon_selection_bkg_base: &Muon_selection_bkg_base
 trig_base: &trig_base
   - "all_muon0_pt_vs_all_muon1_pt"
   - "mu_lj_sum_pt_score"
-
+  - "all_muon_dR"
 

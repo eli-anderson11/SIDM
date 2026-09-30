@@ -161,6 +161,31 @@ def lab_pt_ratio(objs, mask, lep_name):
     subleading_pt = sorted_parts[:, 1].pt
     return subleading_pt / leading_pt
 
+def calc_event_muon_dR(objs, mask):
+    import awkward as ak
+    import numpy as np
+    
+    # 1. Concatenate the raw kinematics directly
+    all_pt = ak.concatenate([objs["muons"].pt, objs["dsaMuons"].pt], axis=-1)
+    all_eta = ak.concatenate([objs["muons"].eta, objs["dsaMuons"].eta], axis=-1)
+    all_phi = ak.concatenate([objs["muons"].phi, objs["dsaMuons"].phi], axis=-1)
+    
+    # 2. Sort indices by pT descending
+    sort_idx = ak.argsort(all_pt, axis=-1, ascending=False)
+    
+    # 3. Apply the sort to eta and phi, then apply the event mask
+    eta_masked = all_eta[sort_idx][mask]
+    phi_masked = all_phi[sort_idx][mask]
+    
+    # 4. Extract leading (index 0) and subleading (index 1)
+    deta = eta_masked[:, 0] - eta_masked[:, 1]
+    dphi = phi_masked[:, 0] - phi_masked[:, 1]
+    
+    # 5. Wrap dphi to [-pi, pi] and compute dR
+    dphi = (dphi + np.pi) % (2 * np.pi) - np.pi
+    return np.sqrt(deta**2 + dphi**2)
+
+
 hist_defs = {
     # pv
     "pv_n": obj_attr("pvs", "npvs", nbins=50, label="Number of PVs"),
@@ -454,7 +479,7 @@ hist_defs = {
                    lambda objs, mask: objs["muons"].good_matched_dsa_muons[:,:,:1].numMatch),#Also works! idk if the result makes sense, but it runs
         ],
     ),
-
+    
 
 
     # pfmuon-genA
@@ -736,7 +761,15 @@ hist_defs = {
         ],
         evt_mask=lambda objs: ak.num(objs["mu_ljs"]) >= 2,
     ),
-
+    "all_muon_dR": h.Histogram(
+        [
+            h.Axis(hist.axis.Regular(50, 0, 2.0*math.pi, name="all_muon_dR", 
+                                     label=r"$\Delta R(\mu_0, \mu_1)$"),
+                   lambda objs, mask: calc_event_muon_dR(objs, mask)),
+        ],
+        # Safely require at least 2 total muons
+        evt_mask=lambda objs: (ak.num(objs["muons"]) + ak.num(objs["dsaMuons"])) > 1,
+    ),
     
     # lj
     "lj_n": obj_attr("ljs", "n"),
